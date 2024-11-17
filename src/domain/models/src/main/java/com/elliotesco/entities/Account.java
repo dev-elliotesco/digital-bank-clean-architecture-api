@@ -12,10 +12,11 @@ public class Account {
     public Account() {
     }
 
-    public Account(String id, String number, String type) {
+    public Account(String id, String number, String type, List<Transaction> transactions) {
         this.id = id;
         this.number = number;
         this.type = type;
+        this.transactions = new ArrayList<>();
     }
 
     public String getId() {
