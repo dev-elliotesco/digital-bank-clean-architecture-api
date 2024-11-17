@@ -1,1 +1,14 @@
 rootProject.name = 'bank'
+
+include ':app'
+include ':models'
+include ':usecases'
+include ':mongo'
+include ':reactive-web'
+
+findProject(':app')?.projectDir = file('./src/application/app')
+findProject(':models')?.projectDir = file('./src/domain/models')
+findProject(':usecases')?.projectDir = file('./src/domain/usecases')
+findProject(':mongo')?.projectDir = file('./src/infrastructure/driven-adapters/mongo')
+findProject(':reactive-web')?.projectDir = file('./src/infrastructure/entry-points/reactive-web')
+
