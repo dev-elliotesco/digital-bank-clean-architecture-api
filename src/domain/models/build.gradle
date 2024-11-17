@@ -1,0 +1,3 @@
+tasks.named('bootJar') {
+    mainClass.set('com.elliotesco.application')
+}

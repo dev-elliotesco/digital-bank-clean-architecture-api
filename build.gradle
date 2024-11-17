@@ -39,6 +39,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.named('bootJar') {
+	mainClass.set('com.elliotesco.application')
+}
+
 allprojects {
 	repositories {
 		mavenCentral()
