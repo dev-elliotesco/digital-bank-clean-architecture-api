@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':usecases')
+    implementation('org.springframework.boot:spring-boot-starter-amqp')
+}
+
+tasks.named('bootJar') {
+    mainClass.set('com.elliotesco.application')
+}

@@ -5,10 +5,14 @@ include ':models'
 include ':usecases'
 include ':mongo'
 include ':reactive-web'
+include ':rabbitmq'
+include ':rabbitmq-consumer'
 
 findProject(':app')?.projectDir = file('./src/application/app')
 findProject(':models')?.projectDir = file('./src/domain/models')
 findProject(':usecases')?.projectDir = file('./src/domain/usecases')
 findProject(':mongo')?.projectDir = file('./src/infrastructure/driven-adapters/mongo')
 findProject(':reactive-web')?.projectDir = file('./src/infrastructure/entry-points/reactive-web')
+findProject(':rabbitmq')?.projectDir = file('./src/infrastructure/driven-adapters/rabbitmq')
+findProject(':rabbitmq-consumer')?.projectDir = file('./src/infrastructure/entry-points/rabbitmq-consumer')
 

@@ -2,6 +2,7 @@ package com.elliotesco.logic.transaction;
 
 import com.elliotesco.dtos.transaction.TransactionRequestDTO;
 import com.elliotesco.dtos.transaction.TransactionResponseDTO;
+import com.elliotesco.dtos.transaction.TransferRequestDTO;
 import com.elliotesco.entities.Transaction;
 import com.elliotesco.exceptions.transaction.InsufficientFundsException;
 import com.elliotesco.logic.account.AccountUseCases;
@@ -45,5 +46,37 @@ public class TransacctionUseCases {
                                     });
                         })
                 );
+    }
+
+    public Mono<Void> transferFunds(TransferRequestDTO transferRequest) {
+        return accountUseCases.checkAccountExists(transferRequest.getFromAccountNumber())
+                .zipWith(accountUseCases.checkAccountExists(transferRequest.getToAccountNumber()))
+                .flatMap(accounts -> {
+                    var fromAccount = accounts.getT1();
+                    var toAccount = accounts.getT2();
+
+                    return accountUseCases.getBalance(fromAccount.getNumber())
+                            .flatMap(balance -> {
+                                if (balance < transferRequest.getAmount()) {
+                                    return Mono.error(new InsufficientFundsException(ErrorMessages.INSUFFICIENT_FUNDS));
+                                }
+
+                                Transaction debitTransaction = new Transaction();
+                                debitTransaction.setType("RETIRO");
+                                debitTransaction.setAmount(transferRequest.getAmount());
+                                fromAccount.getTransactions().add(debitTransaction);
+
+                                Transaction creditTransaction = new Transaction();
+                                creditTransaction.setType("DEPOSITO");
+                                creditTransaction.setAmount(transferRequest.getAmount());
+                                toAccount.getTransactions().add(creditTransaction);
+
+                                return transactionRepositoryPort.save(debitTransaction)
+                                        .then(transactionRepositoryPort.save(creditTransaction))
+                                        .then(accountRepositoryPort.save(fromAccount))
+                                        .then(accountRepositoryPort.save(toAccount))
+                                        .then();
+                            });
+                });
     }
 }
